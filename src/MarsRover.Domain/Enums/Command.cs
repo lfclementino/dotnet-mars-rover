@@ -4,6 +4,6 @@
     {
         RotateRight = 'R',
         RotateLeft = 'L',
-        MoveForward = 'M'
+        MoveForward = 'A'
     }
 }
