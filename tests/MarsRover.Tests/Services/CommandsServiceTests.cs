@@ -1,8 +1,11 @@
 ﻿using FluentAssertions;
+using MarsRover.Domain.Commands;
+using MarsRover.Domain.Enums;
 using MarsRover.Domain.Interfaces;
 using MarsRover.Domain.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System;
 using System.Linq;
 using Xunit;
 
@@ -54,6 +57,17 @@ namespace MarsRover.Tests.Services
                                                      o == 'R').Count();
 
             commandsList.Count.Should().Equals(countValid);
+        }
+
+        [Theory]
+        [InlineData(Command.MoveForward, typeof(AdvanceCommand))]
+        [InlineData(Command.RotateLeft, typeof(TurnLeftCommand))]
+        [InlineData(Command.RotateRight, typeof(TurnRightCommand))]
+        public void GetCommand_IsNotNull_ShouldReturnCorrectCommandObject(Command command, Type commandType)
+        {
+            var commandObj = _commandsService.GetCommand(command);
+
+            commandObj.Should().BeOfType(commandType);
         }
     }
 }
