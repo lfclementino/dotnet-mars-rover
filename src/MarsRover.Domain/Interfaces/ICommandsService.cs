@@ -6,5 +6,6 @@ namespace MarsRover.Domain.Interfaces
     public interface ICommandsService
     {
         List<Command> GetCommands(string commands);
+        ICommand GetCommand(Command command);
     }
 }

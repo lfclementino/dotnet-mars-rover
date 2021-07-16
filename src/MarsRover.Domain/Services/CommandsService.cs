@@ -1,4 +1,5 @@
-﻿using MarsRover.Domain.Enums;
+﻿using MarsRover.Domain.Commands;
+using MarsRover.Domain.Enums;
 using MarsRover.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
@@ -52,6 +53,21 @@ namespace MarsRover.Domain.Services
             {
                 _logger.LogError($"Get Commands: {ex.Message}");
                 return null;
+            }
+        }
+
+        public ICommand GetCommand(Command command)
+        {
+            switch (command)
+            {
+                case Command.MoveForward:
+                    return new AdvanceCommand();
+                case Command.RotateLeft:
+                    return new TurnLeftCommand();
+                case Command.RotateRight:
+                    return new TurnRightCommand();
+                default:
+                    return null;
             }
         }
     }
