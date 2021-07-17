@@ -33,7 +33,7 @@ namespace MarsRover.Domain.Services
                 var validFloorForRover = ValidateLocationAndFloor(floor, rover.Location);
                 if (!validFloorForRover)
                 {
-                    _logger.LogError($"Initialize Mission: Invalid Rover position X:{rover.Location.X} - Y:{rover.Location.Y} - Direction:{rover.Location.Direction} for the given floor Width:{floor.Width} - Height:{floor.Height}");
+                    _logger.LogError($"Initialize Mission: Invalid Rover position X:{rover.Location.X} Y:{rover.Location.Y} Dir:{rover.Location.Direction} for the given floor W:{floor.Width} H:{floor.Height}");
                     return null;
                 }
 
