@@ -10,11 +10,6 @@ namespace MarsRover.Rover
 {
     class Program
     {
-        private static ILogger<Program> _logger;
-        private static IFloorService _floorService;
-        private static ICommandsService _commandsService;
-        private static IRoverMissionService _roverMissionService;
-
         static void Main(string[] args)
         {
 
@@ -30,22 +25,22 @@ namespace MarsRover.Rover
                 .AddScoped<IRoverMissionService, RoverMissionService>()
                 .BuildServiceProvider();
 
-            _logger = serviceProvider.GetService<ILogger<Program>>(); ;
-            _floorService = serviceProvider.GetService<IFloorService>();
-            _commandsService = serviceProvider.GetRequiredService<ICommandsService>();
-            _roverMissionService = serviceProvider.GetService<IRoverMissionService>();
-
-            RunRoverMission(1, 1, 4, 3, Direction.North, "AAAALAARARAARAAAAArf");
-            RunRoverMission(100, 10, 4, 3, Direction.West, "AAAAAAAALAARARAARAAAAAr");
-            RunRoverMission(100, 100, 40, 30, Direction.South, "AAAALAARARAARAAAAArAAAALAARARAARAAAAArAAAALAARARAARAAAAAr");
+            RunRoverMission(serviceProvider, 1, 1, 4, 3, Direction.North, "AAAALAARARAARAAAAArf");
+            RunRoverMission(serviceProvider, 100, 10, 4, 3, Direction.West, "AAAAAAAALAARARAARAAAAAr");
+            RunRoverMission(serviceProvider, 100, 100, 40, 30, Direction.South, "AAAALAARARAARAAAAArAAAALAARARAARAAAAArAAAALAARARAARAAAAAr");
 
             Console.ReadLine();
         }
 
-        static void RunRoverMission(int width, int height, int x, int y, Direction initialDirection, string inputCommands)
+        static void RunRoverMission(ServiceProvider serviceProvider, int width, int height, int x, int y, Direction initialDirection, string inputCommands)
         {
             try
             {
+                var _logger = serviceProvider.GetService<ILogger<Program>>(); ;
+                var _floorService = serviceProvider.GetService<IFloorService>();
+                var _commandsService = serviceProvider.GetRequiredService<ICommandsService>();
+                var _roverMissionService = serviceProvider.GetService<IRoverMissionService>();
+
                 // Create Rover and Square Floor
                 var floor = _floorService.Create(width, height);
                 var rover = new Domain.Models.Rover();
