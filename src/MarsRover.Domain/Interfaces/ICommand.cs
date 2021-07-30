@@ -4,6 +4,6 @@ namespace MarsRover.Domain.Interfaces
 {
     public interface ICommand
     {
-        bool Execute(Floor floor, Rover rover);
+        void Execute(Floor floor, Rover rover);
     }
 }
