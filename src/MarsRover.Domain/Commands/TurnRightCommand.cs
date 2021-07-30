@@ -7,7 +7,7 @@ namespace MarsRover.Domain.Commands
 {
     public class TurnRightCommand : ICommand
     {
-        public bool Execute(Floor floor, Rover rover)
+        public void Execute(Floor floor, Rover rover)
         {
             try
             {
@@ -26,7 +26,6 @@ namespace MarsRover.Domain.Commands
                         rover.Location.Direction = Direction.South;
                         break;
                 }
-                return true;
             }
             catch (Exception ex)
             {

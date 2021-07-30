@@ -1,4 +1,5 @@
 ﻿using MarsRover.Domain.Enums;
+using MarsRover.Domain.Exceptions;
 using MarsRover.Domain.Interfaces;
 using MarsRover.Domain.Models;
 using System;
@@ -7,42 +8,33 @@ namespace MarsRover.Domain.Commands
 {
     public class AdvanceCommand : ICommand
     {
-        public bool Execute(Floor floor, Rover rover)
+        public void Execute(Floor floor, Rover rover)
         {
             try
             {
                 switch (rover.Location.Direction)
                 {
                     case Direction.North:
-                        if (rover.Location.Y >= floor.Height)
+                        if (rover.Location.Y.Value >= floor.Height)
                         {
-                            return false;
+                            throw new OutOfBoundsException();
                         }
-                        rover.Location.Y += 1;
+                        rover.Location.Y.Increase();
                         break;
                     case Direction.East:
-                        if (rover.Location.X >= floor.Width)
+                        if (rover.Location.X.Value >= floor.Width)
                         {
-                            return false;
+                            throw new OutOfBoundsException();
                         }
-                        rover.Location.X += 1;
+                        rover.Location.X.Increase();
                         break;
                     case Direction.South:
-                        if (rover.Location.Y <= 0)
-                        {
-                            return false;
-                        }
-                        rover.Location.Y -= 1;
+                        rover.Location.Y.Decrease();
                         break;
                     case Direction.West:
-                        if (rover.Location.X <= 0)
-                        {
-                            return false;
-                        }
-                        rover.Location.X -= 1;
+                        rover.Location.X.Decrease();
                         break;
                 }
-                return true;
             }
             catch (Exception ex)
             {
