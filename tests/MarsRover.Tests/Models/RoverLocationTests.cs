@@ -20,14 +20,14 @@ namespace MarsRover.Tests.Models
             var roverLocation = new RoverLocation()
             {
                 Direction = Direction.North,
-                X = 200,
-                Y = 200
+                X = new Axis(200),
+                Y = new Axis(200)
             };
 
             Assert.NotNull(roverLocation);
             Assert.Equal(Direction.North, roverLocation.Direction);
-            Assert.Equal(200, roverLocation.X);
-            Assert.Equal(200, roverLocation.Y);
+            Assert.Equal(200, roverLocation.X.Value);
+            Assert.Equal(200, roverLocation.Y.Value);
         }
     }
 }

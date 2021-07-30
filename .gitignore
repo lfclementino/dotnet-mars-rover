@@ -260,3 +260,5 @@ Session.vim
 
 # Visual Studio Code
 .devcontainer/
+
+*.zip

@@ -14,7 +14,6 @@ namespace MarsRover.Tests.Models
 
             Assert.NotNull(rover);
             Assert.False(rover.Id == default(Guid));
-
         }
 
         [Fact]
@@ -24,8 +23,8 @@ namespace MarsRover.Tests.Models
             var location = new RoverLocation()
             {
                 Direction = Direction.North,
-                X = 2,
-                Y = 4
+                X = new Axis(2),
+                Y = new Axis(4)
             };
 
             var rover = new Rover()

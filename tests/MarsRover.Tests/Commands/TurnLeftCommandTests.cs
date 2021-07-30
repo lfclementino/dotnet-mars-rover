@@ -31,7 +31,6 @@ namespace MarsRover.Tests.Commands
 
             command.Execute(floor, rover);
 
-            //result.Should().Be(expected);
             rover.Location.Direction.Should().Be(finalDirection);
         }
     }
