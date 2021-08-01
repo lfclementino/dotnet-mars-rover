@@ -4,6 +4,7 @@ using MarsRover.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MarsRover.Domain.Services
 {
@@ -16,49 +17,32 @@ namespace MarsRover.Domain.Services
             _logger = logger;
         }
 
-        public List<Command> GetCommands(string commands)
+        public IList<ICommand> GetCommands(string commands)
         {
             try
             {
-                if (commands == null)
+                if (string.IsNullOrEmpty(commands))
                 {
-                    _logger.LogError("GetCommands: commands is null.");
-                    return null;
+                    throw new ArgumentNullException("GetCommands: input commands can't be null or empty.");
                 }
 
-                var commandsResult = new List<Command>();
                 var commandsArray = commands.ToUpper().ToCharArray();
-                foreach (var command in commandsArray)
-                {
-                    switch (command)
-                    {
-                        case (char)Command.MoveForward:
-                            commandsResult.Add(Command.MoveForward);
-                            break;
-                        case (char)Command.RotateLeft:
-                            commandsResult.Add(Command.RotateLeft);
-                            break;
-                        case (char)Command.RotateRight:
-                            commandsResult.Add(Command.RotateRight);
-                            break;
-                        default:
-                            _logger.LogError($"Get Commands: Invalid command '{command}'");
-                            break;
-                    }
-                }
-
+                var commandsResult = commandsArray.Select(cmd => GetCommand(cmd)).OfType<ICommand>().ToList();
                 return commandsResult;
+            }
+            catch (ArgumentException ex)
+            {
+                throw ex;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Get Commands: {ex.Message}");
-                return null;
+                throw new Exception($"Get Commands: {ex.Message}");
             }
         }
 
-        public ICommand GetCommand(Command command)
+        private ICommand GetCommand(char command)
         {
-            switch (command)
+            switch ((Command)command)
             {
                 case Command.MoveForward:
                     return new AdvanceCommand();
@@ -67,6 +51,7 @@ namespace MarsRover.Domain.Services
                 case Command.RotateRight:
                     return new TurnRightCommand();
                 default:
+                    _logger.LogError($"Get Commands: Invalid command '{command}'");
                     return null;
             }
         }
