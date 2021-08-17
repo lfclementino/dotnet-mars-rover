@@ -18,7 +18,7 @@ namespace MarsRover.Domain.Models
             {
                 _width = value;
 
-                this.Validate(new InvalidFloorSizeException(nameof(Width)));
+                this.Validate<InvalidFloorSizeException>($"Width: {value}");
             } 
         }
 
@@ -30,7 +30,7 @@ namespace MarsRover.Domain.Models
             {
                 _height = value;
 
-                this.Validate(new InvalidFloorSizeException(nameof(Height)));
+                this.Validate<InvalidFloorSizeException>($"Height: {value}");
             }
         }
 

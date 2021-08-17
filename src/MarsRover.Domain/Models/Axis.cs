@@ -16,7 +16,7 @@ namespace MarsRover.Domain.Models
             {
                 _value = value;
 
-                this.Validate(new OutOfBoundsException());
+                this.Validate<InvalidAxisValueException>($"{value}");
             }
         }
         public Axis(int value)
