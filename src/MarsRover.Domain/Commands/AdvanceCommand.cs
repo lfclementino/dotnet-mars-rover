@@ -36,6 +36,10 @@ namespace MarsRover.Domain.Commands
                         break;
                 }
             }
+            catch (InvalidAxisValueException ex)
+            {
+                throw new OutOfBoundsException();
+            }
             catch (Exception ex)
             {
                 throw ex;
