@@ -23,11 +23,12 @@ namespace MarsRover.Domain.Services
             {
                 if (string.IsNullOrEmpty(commands))
                 {
-                    throw new ArgumentNullException("GetCommands: input commands can't be null or empty.");
+                    throw new ArgumentNullException("Get Commands: input commands can't be null or empty.");
                 }
 
-                var commandsArray = commands.ToUpper().ToCharArray();
-                var commandsResult = commandsArray.Select(cmd => GetCommand(cmd)).OfType<ICommand>().ToList();
+                var commandsResult = commands.ToUpper().Select(cmd => GetCommand(cmd))
+                                                       .OfType<ICommand>()
+                                                       .ToList();
                 return commandsResult;
             }
             catch (ArgumentException ex)
