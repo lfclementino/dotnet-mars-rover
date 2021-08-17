@@ -6,14 +6,14 @@ namespace MarsRover.Domain.Helper
 {
     public static class ObjectValidation
     {
-        public static void Validate(this object obj, Exception exception = null)
+        public static void Validate<T>(this object obj, string message) where T : Exception
         {
             var isValid = Validator.TryValidateObject(obj,
                                                new ValidationContext(obj),
-                                               new List<ValidationResult>(), 
+                                               new List<ValidationResult>(),
                                                true);
 
-            if (!isValid) throw exception ?? new Exception($"Invalid value");
+            if (!isValid) throw (Exception)Activator.CreateInstance(typeof(T), message);
         }
     }
 }
