@@ -21,12 +21,14 @@ namespace MarsRover.Rover
                 })
                 // Services are scoped so we use the same object per request 
                 .AddScoped<ICommandsService, CommandsService>()
-                .AddScoped<IFloorService, FloorService>()
                 .AddScoped<IRoverMissionService, RoverMissionService>()
                 .BuildServiceProvider();
 
             RunRoverMission(serviceProvider, 1, 1, 4, 3, Direction.North, "AAAALAARARAARAAAAArf");
-            RunRoverMission(serviceProvider, 100, 10, 4, 3, Direction.West, "AAAAAAAALAARARAARAAAAAr");
+            RunRoverMission(serviceProvider, -10, 1, -4, 3, Direction.North, "AAAALAARARAARAAAAArf");
+            RunRoverMission(serviceProvider, 10, 1, -4, 3, Direction.North, "AAAALAARARAARAAAAArf");
+            RunRoverMission(serviceProvider, 100, 10, 4, 3, Direction.West, "aaeWQQGAA");
+            RunRoverMission(serviceProvider, 100, 10, 4, 3, Direction.West, "eWAAAAAAAALAARARAARAAAAAr");
             RunRoverMission(serviceProvider, 100, 100, 40, 30, Direction.South, "AAAALAARARAARAAAAArAAAALAARARAARAAAAArAAAALAARARAARAAAAAr");
 
             Console.ReadLine();
@@ -34,52 +36,42 @@ namespace MarsRover.Rover
 
         static void RunRoverMission(ServiceProvider serviceProvider, int width, int height, int x, int y, Direction initialDirection, string inputCommands)
         {
-            try
+            using (var scope = serviceProvider.CreateScope())
             {
-                var _logger = serviceProvider.GetService<ILogger<Program>>(); ;
-                var _floorService = serviceProvider.GetService<IFloorService>();
-                var _commandsService = serviceProvider.GetRequiredService<ICommandsService>();
-                var _roverMissionService = serviceProvider.GetService<IRoverMissionService>();
+                var logger = scope.ServiceProvider.GetService<ILogger<Program>>();
+                logger.LogInformation("*** Starting Mission ***");
 
-                // Create Rover and Square Floor
-                var floor = _floorService.Create(width, height);
-                var rover = new Domain.Models.Rover();
-                rover.Location = new RoverLocation()
+                try
                 {
-                    Direction = initialDirection,
-                    X = x,
-                    Y = y
-                };
+                    var roverMissionService = scope.ServiceProvider.GetService<IRoverMissionService>();
 
-                if (floor == null || rover == null) return;
+                    // Create Rover and Square Floor
+                    var floor = new Floor(width, height);
 
-                // Initialize Mission
-                var roverMission = _roverMissionService.Initialize(floor, rover);
-                if (roverMission == null) return;
+                    var rover = new Domain.Models.Rover();
+                    rover.Location = new RoverLocation()
+                    {
+                        Direction = initialDirection,
+                        X = new Axis(x),
+                        Y = new Axis(y)
+                    };
 
-                _logger.LogInformation($"Mission created with Floor W:{floor.Width} H:{floor.Height} " +
-                                       $"and Rover at initial position X:{rover.Location.X} Y:{rover.Location.Y} Dir:{rover.Location.Direction}");
+                    // Initialize Mission
+                    var roverMission = new RoverMission(floor, rover);
 
-                var commands = _commandsService.GetCommands(inputCommands);
-                var result = true;
-                foreach (Command command in commands)
-                {
-                    result = _roverMissionService.MoveRover(roverMission, command);
-                    if (!result) break;
+                    logger.LogInformation($"Mission created with Floor W:{floor.Width} H:{floor.Height} " +
+                                           $"and Rover at initial position X:{rover.Location.X.Value} Y:{rover.Location.Y.Value} Dir:{rover.Location.Direction}");
+
+                    roverMissionService.MoveRover(roverMission, inputCommands);
                 }
-
-                if (result)
+                catch (Exception ex)
                 {
-                    _logger.LogInformation($"[FINAL POSITION] {result}, {rover.Location.Direction}, ({rover.Location.X},{rover.Location.Y})");
+                    logger.LogError($"Mission Error: {ex.Message}");
                 }
-                else
+                finally
                 {
-                    _logger.LogWarning($"[WARNING] {result}, OUT OF BOUNDS");
+                    logger.LogInformation("*** End of Mission ***");
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Mission Error: {ex.Message}");
             }
         }
     }
