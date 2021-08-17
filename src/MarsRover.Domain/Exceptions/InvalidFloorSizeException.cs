@@ -4,8 +4,12 @@ namespace MarsRover.Domain.Exceptions
 {
     public class InvalidFloorSizeException : Exception
     {
-        public InvalidFloorSizeException(string dimensionName)
-            : base($"Invalid {dimensionName} Floor value")
+        public InvalidFloorSizeException()
+            : base()
+        { }
+
+        public InvalidFloorSizeException(string dimension)
+            : base($"Invalid Floor {dimension}")
         { }
     }
 }
