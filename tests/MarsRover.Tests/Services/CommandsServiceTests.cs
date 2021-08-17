@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using MarsRover.Domain.Commands;
-using MarsRover.Domain.Enums;
 using MarsRover.Domain.Interfaces;
 using MarsRover.Domain.Services;
 using Microsoft.Extensions.Logging;
@@ -23,12 +22,11 @@ namespace MarsRover.Tests.Services
         }
 
         [Theory]
+        [InlineData("")]
         [InlineData(null)]
-        public void GetCommands_IsNull_ShouldReturnNull(string commands)
+        public void GetCommands_CommandsIsNullorEmpty_ShouldThrowArgumentNullException(string commands)
         {
-            var commandsList = _commandsService.GetCommands(commands);
-
-            commandsList.Should().BeNull();
+            Assert.Throws<ArgumentNullException>(() => _commandsService.GetCommands(commands));
         }
 
         [Theory]
@@ -36,7 +34,7 @@ namespace MarsRover.Tests.Services
         [InlineData("RAAALLAARR")]
         [InlineData("LARAAAARR")]
         [InlineData("arlAAlLL")]
-        public void GetCommands_IsNotNullAndValidCommands_ShouldReturnCommandList_CountShouldEqualWithCommandsLength(string commands)
+        public void GetCommands_CommandsIsNotNullAndValidCommands_ShouldReturnCommandList_CountShouldEqualWithCommandsLength(string commands)
         {
             var commandsList = _commandsService.GetCommands(commands);
 
@@ -47,8 +45,7 @@ namespace MarsRover.Tests.Services
         [InlineData("AWWALAARAFLA")]
         [InlineData("RAACALFLAARSAR")]
         [InlineData("rrrAACAdFLAARSAR")]
-        [InlineData("")]
-        public void GetCommands_IsNotNullAndValidAndInvalidCommands_ShouldReturnCommandList_CountShouldEqualWithValidCommandsLength(string commands)
+        public void GetCommands_CommandsIsNotNullAndValidAndInvalidCommands_ShouldReturnCommandList_CountShouldEqualWithValidCommandsLength(string commands)
         {
             var commandsList = _commandsService.GetCommands(commands);
 
@@ -60,14 +57,18 @@ namespace MarsRover.Tests.Services
         }
 
         [Theory]
-        [InlineData(Command.MoveForward, typeof(AdvanceCommand))]
-        [InlineData(Command.RotateLeft, typeof(TurnLeftCommand))]
-        [InlineData(Command.RotateRight, typeof(TurnRightCommand))]
-        public void GetCommand_IsNotNull_ShouldReturnCorrectCommandObject(Command command, Type commandType)
+        [InlineData("A", typeof(AdvanceCommand))]
+        [InlineData("R", typeof(TurnRightCommand))]
+        [InlineData("L", typeof(TurnLeftCommand))]
+        public void GetCommands_IsNotNullAndValidSingleCommand_ShouldReturnCorrectCommand(string commandLetter, Type commandType)
         {
-            var commandObj = _commandsService.GetCommand(command);
+            var commandsList = _commandsService.GetCommands(commandLetter);
 
-            commandObj.Should().BeOfType(commandType);
+            commandsList.Count.Should().Equals(commandLetter.Length);
+
+            var command = commandsList.FirstOrDefault();
+
+            command.GetType().Should().Be(commandType);
         }
     }
 }

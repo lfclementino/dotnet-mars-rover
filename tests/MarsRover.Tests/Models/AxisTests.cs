@@ -24,7 +24,7 @@ namespace MarsRover.Tests.Models
         [InlineData(-12344200)]
         public void NewAxis_InvalidValue_ShouldThrowOutOfBoundsException(int value)
         {
-            Assert.Throws<OutOfBoundsException>(() => new Axis(value));
+            Assert.Throws<InvalidAxisValueException>(() => new Axis(value));
         }
 
         [Theory]
@@ -57,7 +57,7 @@ namespace MarsRover.Tests.Models
         {
             var axis = new Axis(value);
             
-            Assert.Throws<OutOfBoundsException>(() => axis.Decrease());
+            Assert.Throws<InvalidAxisValueException>(() => axis.Decrease());
         }
     }
 }

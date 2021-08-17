@@ -51,7 +51,6 @@ namespace MarsRover.Tests.Commands
                     rover.Location.Y.Value.Should().Be(y);
                     break;
             }
-            //}
         }
 
         [Theory]
@@ -59,8 +58,6 @@ namespace MarsRover.Tests.Commands
         [InlineData(5, 5, 2, 20, Direction.North)]
         [InlineData(10, 10, 10, 2, Direction.East)]
         [InlineData(10, 10, 44, 2, Direction.East)]
-        [InlineData(10, 10, 0, 4, Direction.West)]
-        [InlineData(10, 10, 10, 0, Direction.South)]
         public void Execute_ShouldThrowException_OutOfBoundsException(int width, int height, int x, int y, Direction direction)
         {
             var floor = new Floor(width, height);

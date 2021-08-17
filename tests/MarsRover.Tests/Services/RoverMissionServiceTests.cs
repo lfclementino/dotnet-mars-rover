@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using MarsRover.Domain.Commands;
 using MarsRover.Domain.Enums;
 using MarsRover.Domain.Interfaces;
 using MarsRover.Domain.Models;
@@ -13,170 +12,37 @@ namespace MarsRover.Tests.Services
     public class RoverMissionServiceTests
     {
         private readonly Mock<ILogger<IRoverMissionService>> _mockLogger;
-        private readonly Mock<IFloorService> _mockFloorService;
-        private readonly Mock<ICommandsService> _mockCommandsService;
+        private readonly Mock<ILogger<ICommandsService>> _mockCommandLogger;
+        private readonly ICommandsService _commandsService;
 
         public RoverMissionServiceTests()
         {
+            _mockCommandLogger = new Mock<ILogger<ICommandsService>>();
+            _commandsService = new CommandsService(_mockCommandLogger.Object);
             _mockLogger = new Mock<ILogger<IRoverMissionService>>();
-            _mockFloorService = new Mock<IFloorService>();
-            _mockCommandsService = new Mock<ICommandsService>();
         }
 
         [Theory]
-        [InlineData(100, 100, 40, 30)]
-        [InlineData(100, 100, 42, 90)]
-        public void Initialize_ValidFloorAndRover_ShouldReturnValidRoverMission(int width, int height, int x, int y)
+        [InlineData(100, 100, 40, 30, Direction.South, "AA", 40, 28, Direction.South)]
+        [InlineData(100, 100, 42, 90, Direction.North, "A", 42, 91, Direction.North)]
+        public void MoveRover_ValidFloorAndLocation_ShouldReturnTrue(int width, int height, int x, int y, Direction direction, string commands, int xFinal, int yFinal, Direction directionFinal)
         {
-            _mockFloorService.Setup(x => x.Validate(It.IsAny<Floor>())).Returns(true);
-
-            var testFloor = new Floor()
-            {
-                Width = width,
-                Height = height
-            };
-
-            var testRover = new Rover();
-            testRover.Location.Direction = Direction.North;
-            testRover.Location.X = x;
-            testRover.Location.Y = y;
-
-            var roverMissionService = new RoverMissionService(_mockLogger.Object, _mockFloorService.Object, _mockCommandsService.Object);
-
-            var roverMission = roverMissionService.Initialize(testFloor, testRover);
-
-            roverMission.Should().NotBeNull();
-            roverMission.Rover.Should().Be(testRover);
-            roverMission.Floor.Should().Be(testFloor);
-        }
-
-        [Theory]
-        [InlineData(100, 100, 400, 30)]
-        [InlineData(100, 100, 42, 900)]
-        public void Initialize_InvalidRover_ShouldReturnNullRoverMission(int width, int height, int x, int y)
-        {
-            _mockFloorService.Setup(x => x.Validate(It.IsAny<Floor>())).Returns(true);
-
-            var testFloor = new Floor()
-            {
-                Width = width,
-                Height = height
-            };
-
-            var testRover = new Rover();
-            testRover.Location.Direction = Direction.North;
-            testRover.Location.X = x;
-            testRover.Location.Y = y;
-
-            var roverMissionService = new RoverMissionService(_mockLogger.Object, _mockFloorService.Object, _mockCommandsService.Object);
-
-            var roverMission = roverMissionService.Initialize(testFloor, testRover);
-
-            roverMission.Should().BeNull();
-        }
-
-        [Theory]
-        [InlineData(-100, 100, 40, 30)]
-        [InlineData(100, -100, 42, 90)]
-        public void Initialize_InvalidFloor_ShouldReturnNullRoverMission(int width, int height, int x, int y)
-        {
-            _mockFloorService.Setup(x => x.Validate(It.IsAny<Floor>())).Returns(false);
-
-            var testFloor = new Floor()
-            {
-                Width = width,
-                Height = height
-            };
-
-            var testRover = new Rover();
-            testRover.Location.Direction = Direction.North;
-            testRover.Location.X = x;
-            testRover.Location.Y = y;
-
-            var roverMissionService = new RoverMissionService(_mockLogger.Object, _mockFloorService.Object, _mockCommandsService.Object);
-
-            var roverMission = roverMissionService.Initialize(testFloor, testRover);
-
-            roverMission.Should().BeNull();
-        }
-
-        [Theory]
-        [InlineData(100, 100, 40, 30)]
-        [InlineData(100, 100, 42, 90)]
-        public void ValidateLocationAndFloor_ValidFloorAndLocation_ShouldReturnTrue(int width, int height, int x, int y)
-        {
-            _mockFloorService.Setup(x => x.Validate(It.IsAny<Floor>())).Returns(false);
-
-            var testFloor = new Floor()
-            {
-                Width = width,
-                Height = height
-            };
-
-            var testRover = new Rover();
-            testRover.Location.Direction = Direction.North;
-            testRover.Location.X = x;
-            testRover.Location.Y = y;
-
-            var roverMissionService = new RoverMissionService(_mockLogger.Object, _mockFloorService.Object, _mockCommandsService.Object);
-
-            var result = roverMissionService.ValidateLocationAndFloor(testFloor, testRover.Location);
-
-            result.Should().BeTrue();
-        }
-
-        [Theory]
-        [InlineData(100, 100, 140, 30)]
-        [InlineData(100, 100, 42, 290)]
-        public void ValidateLocationAndFloor_ValidFloorAndInvalidLocation_ShouldReturnFalse(int width, int height, int x, int y)
-        {
-            _mockFloorService.Setup(x => x.Validate(It.IsAny<Floor>())).Returns(true);
-
-            var testFloor = new Floor()
-            {
-                Width = width,
-                Height = height
-            };
-
-            var testRover = new Rover();
-            testRover.Location.Direction = Direction.North;
-            testRover.Location.X = x;
-            testRover.Location.Y = y;
-
-            var roverMissionService = new RoverMissionService(_mockLogger.Object, _mockFloorService.Object, _mockCommandsService.Object);
-
-            var result = roverMissionService.ValidateLocationAndFloor(testFloor, testRover.Location);
-
-            result.Should().BeFalse();
-        }
-
-        [Theory]
-        [InlineData(100, 100, 40, 30, Direction.South, Command.MoveForward)]
-        [InlineData(100, 100, 42, 90, Direction.North, Command.MoveForward)]
-        public void MoveRover_ValidFloorAndLocation_ShouldReturnTrue(int width, int height, int x, int y, Direction direction, Command command)
-        {
-            _mockFloorService.Setup(x => x.Validate(It.IsAny<Floor>())).Returns(true);
-
-            _mockCommandsService.Setup(x => x.GetCommand(It.IsAny<Command>())).Returns(new AdvanceCommand());
-
-            var testFloor = new Floor()
-            {
-                Width = width,
-                Height = height
-            };
+            var testFloor = new Floor(width, height);
 
             var testRover = new Rover();
             testRover.Location.Direction = direction;
-            testRover.Location.X = x;
-            testRover.Location.Y = y;
+            testRover.Location.X = new Axis(x);
+            testRover.Location.Y = new Axis(y);
 
-            var roverMissionService = new RoverMissionService(_mockLogger.Object, _mockFloorService.Object, _mockCommandsService.Object);
+            var roverMission = new RoverMission(testFloor, testRover);
 
-            var roverMission = roverMissionService.Initialize(testFloor, testRover);
+            var roverMissionService = new RoverMissionService(_mockLogger.Object, _commandsService);
 
-            var result = roverMissionService.MoveRover(roverMission, command);
+            roverMissionService.MoveRover(roverMission, commands);
 
-            result.Should().BeTrue();
+            roverMission.Rover.Location.X.Value.Should().Be(xFinal);
+            roverMission.Rover.Location.Y.Value.Should().Be(yFinal);
+            roverMission.Rover.Location.Direction.Should().Be(directionFinal);
         }
     }
 }
