@@ -25,9 +25,6 @@ namespace MarsRover.Rover
                 .BuildServiceProvider();
 
             RunRoverMission(serviceProvider, 1, 1, 4, 3, Direction.North, "AAAALAARARAARAAAAArf");
-            RunRoverMission(serviceProvider, -10, 1, -4, 3, Direction.North, "AAAALAARARAARAAAAArf");
-            RunRoverMission(serviceProvider, 10, 1, -4, 3, Direction.North, "AAAALAARARAARAAAAArf");
-            RunRoverMission(serviceProvider, 100, 10, 4, 3, Direction.West, "aaeWQQGAA");
             RunRoverMission(serviceProvider, 100, 10, 4, 3, Direction.West, "eWAAAAAAAALAARARAARAAAAAr");
             RunRoverMission(serviceProvider, 100, 100, 40, 30, Direction.South, "AAAALAARARAARAAAAArAAAALAARARAARAAAAArAAAALAARARAARAAAAAr");
 
