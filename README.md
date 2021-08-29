@@ -31,7 +31,7 @@ Example:
 ## Checks
 The application makes some checks to ensure everything that is part of the Mission is valid.
 
-- Fist it checks if the Rovers's inital coordinate is inside the square floor created. If not, it returns an ***error*** message.
+- First it checks if the Rovers's inital coordinate is inside the square floor created. If not, it returns an ***error*** message.
   
 ![Error message - rover out of the square floor](screenshots/message_fail.png "Rover out of the square floor")
 
