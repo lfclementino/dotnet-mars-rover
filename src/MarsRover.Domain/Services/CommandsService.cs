@@ -31,7 +31,7 @@ namespace MarsRover.Domain.Services
                                                        .ToList();
                 return commandsResult;
             }
-            catch (ArgumentException ex)
+            catch (ArgumentNullException ex)
             {
                 throw ex;
             }
