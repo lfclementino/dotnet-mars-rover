@@ -1,8 +1,10 @@
 ﻿using FluentAssertions;
 using MarsRover.Domain.Commands;
 using MarsRover.Domain.Interfaces;
+using MarsRover.Domain.Options;
 using MarsRover.Domain.Services;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using System;
 using System.Linq;
@@ -17,8 +19,13 @@ namespace MarsRover.Tests.Services
 
         public CommandsServiceTests()
         {
+            var commandsOptions = Options.Create<CommandsOptions>(
+                                    new CommandsOptions()
+                                    {
+                                        AdvanceSteps = 1
+                                    });
             _mockLogger = new Mock<ILogger<ICommandsService>>();
-            _commandsService = new CommandsService(_mockLogger.Object);
+            _commandsService = new CommandsService(_mockLogger.Object, commandsOptions);
         }
 
         [Theory]

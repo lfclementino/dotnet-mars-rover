@@ -1,10 +1,13 @@
 ﻿using MarsRover.Domain.Enums;
 using MarsRover.Domain.Interfaces;
 using MarsRover.Domain.Models;
+using MarsRover.Domain.Options;
 using MarsRover.Domain.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 
 namespace MarsRover.Rover
 {
@@ -12,6 +15,10 @@ namespace MarsRover.Rover
     {
         static void Main(string[] args)
         {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
 
             var serviceProvider = new ServiceCollection()
                 .AddLogging(b =>
@@ -19,6 +26,8 @@ namespace MarsRover.Rover
                     b.AddConsole();
                     b.SetMinimumLevel(LogLevel.Debug);
                 })
+                // Configure Options
+                .Configure<CommandsOptions>(configuration.GetSection("Commands"))
                 // Services are scoped so we use the same object per request 
                 .AddScoped<ICommandsService, CommandsService>()
                 .AddScoped<IRoverMissionService, RoverMissionService>()

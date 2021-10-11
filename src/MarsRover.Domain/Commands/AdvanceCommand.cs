@@ -8,6 +8,14 @@ namespace MarsRover.Domain.Commands
 {
     public class AdvanceCommand : ICommand
     {
+        private int _step;
+
+        public AdvanceCommand(int step)
+        {
+            _step = step;
+        }
+
+
         public void Execute(Floor floor, Rover rover)
         {
             try
@@ -19,20 +27,20 @@ namespace MarsRover.Domain.Commands
                         {
                             throw new OutOfBoundsException();
                         }
-                        rover.Location.Y.Increase();
+                        rover.Location.Y.Increase(_step);
                         break;
                     case Direction.East:
                         if (rover.Location.X.Value >= floor.Width)
                         {
                             throw new OutOfBoundsException();
                         }
-                        rover.Location.X.Increase();
+                        rover.Location.X.Increase(_step);
                         break;
                     case Direction.South:
-                        rover.Location.Y.Decrease();
+                        rover.Location.Y.Decrease(_step);
                         break;
                     case Direction.West:
-                        rover.Location.X.Decrease();
+                        rover.Location.X.Decrease(_step);
                         break;
                 }
             }

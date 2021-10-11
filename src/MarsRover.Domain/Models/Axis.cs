@@ -23,13 +23,13 @@ namespace MarsRover.Domain.Models
         {
             Value = value;
         }
-        public void Increase()
+        public void Increase(int step)
         {
-            Value += 1;
+            Value += step;
         }
-        public void Decrease()
+        public void Decrease(int step)
         {
-            Value -= 1;
+            Value -= step;
         }
     }
 }
