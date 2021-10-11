@@ -32,9 +32,10 @@ namespace MarsRover.Tests.Models
         [InlineData(5346643)]
         public void Increase_ShouldSetCorrecValue(int value)
         {
+            var step = 1;
             var axis = new Axis(value);
 
-            axis.Increase();
+            axis.Increase(step);
 
             axis.Value.Should().Be(value+1);
         }
@@ -44,9 +45,10 @@ namespace MarsRover.Tests.Models
         [InlineData(5346643)]
         public void Decrease_ShouldSetCorrecValue(int value)
         {
+            var step = 1;
             var axis = new Axis(value);
 
-            axis.Decrease();
+            axis.Decrease(step);
 
             axis.Value.Should().Be(value - 1);
         }
@@ -55,9 +57,10 @@ namespace MarsRover.Tests.Models
         [InlineData(0)]
         public void Decrease_ZeroValue_ShouldThrowOutOfBoundsException(int value)
         {
+            var step = 1;
             var axis = new Axis(value);
             
-            Assert.Throws<InvalidAxisValueException>(() => axis.Decrease());
+            Assert.Throws<InvalidAxisValueException>(() => axis.Decrease(step));
         }
     }
 }
