@@ -2,8 +2,10 @@
 using MarsRover.Domain.Enums;
 using MarsRover.Domain.Interfaces;
 using MarsRover.Domain.Models;
+using MarsRover.Domain.Options;
 using MarsRover.Domain.Services;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -17,8 +19,13 @@ namespace MarsRover.Tests.Services
 
         public RoverMissionServiceTests()
         {
+            var commandsOptions = Options.Create<CommandsOptions>(
+                                    new CommandsOptions()
+                                    {
+                                        AdvanceSteps = 1
+                                    });
             _mockCommandLogger = new Mock<ILogger<ICommandsService>>();
-            _commandsService = new CommandsService(_mockCommandLogger.Object);
+            _commandsService = new CommandsService(_mockCommandLogger.Object, commandsOptions);
             _mockLogger = new Mock<ILogger<IRoverMissionService>>();
         }
 

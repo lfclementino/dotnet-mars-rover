@@ -1,7 +1,9 @@
 ﻿using MarsRover.Domain.Commands;
 using MarsRover.Domain.Enums;
 using MarsRover.Domain.Interfaces;
+using MarsRover.Domain.Options;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +13,12 @@ namespace MarsRover.Domain.Services
     public class CommandsService : ICommandsService
     {
         private readonly ILogger<ICommandsService> _logger;
+        private readonly CommandsOptions _commandsOptions;
 
-        public CommandsService(ILogger<ICommandsService> logger)
+        public CommandsService(ILogger<ICommandsService> logger, IOptions<CommandsOptions> commandsOptions)
         {
             _logger = logger;
+            _commandsOptions = commandsOptions.Value ?? throw new ArgumentNullException(nameof(commandsOptions));
         }
 
         public IList<ICommand> GetCommands(string commands)
@@ -46,7 +50,7 @@ namespace MarsRover.Domain.Services
             switch ((Command)command)
             {
                 case Command.MoveForward:
-                    return new AdvanceCommand();
+                    return new AdvanceCommand(_commandsOptions.AdvanceSteps);
                 case Command.RotateLeft:
                     return new TurnLeftCommand();
                 case Command.RotateRight:

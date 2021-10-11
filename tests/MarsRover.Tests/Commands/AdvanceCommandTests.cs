@@ -16,6 +16,7 @@ namespace MarsRover.Tests.Commands
         [InlineData(10, 10, 3, 8, Direction.South)]
         public void Execute_ShouldNotThrowException(int width, int height, int x, int y, Direction direction)
         {
+            var step = 1;
             var floor = new Floor(width, height);
 
             var rover = new Rover()
@@ -28,7 +29,7 @@ namespace MarsRover.Tests.Commands
                 }
             };
 
-            var command = new AdvanceCommand();
+            var command = new AdvanceCommand(step);
 
             command.Execute(floor, rover);
 
@@ -60,6 +61,7 @@ namespace MarsRover.Tests.Commands
         [InlineData(10, 10, 44, 2, Direction.East)]
         public void Execute_ShouldThrowException_OutOfBoundsException(int width, int height, int x, int y, Direction direction)
         {
+            var step = 1;
             var floor = new Floor(width, height);
 
             var rover = new Rover()
@@ -72,7 +74,7 @@ namespace MarsRover.Tests.Commands
                 }
             };
 
-            var command = new AdvanceCommand();
+            var command = new AdvanceCommand(step);
 
             Assert.Throws<OutOfBoundsException>(() => command.Execute(floor, rover));
         }
