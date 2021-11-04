@@ -1,7 +1,6 @@
 ﻿using MarsRover.Domain.Enums;
 using MarsRover.Domain.Interfaces;
 using MarsRover.Domain.Models;
-using System;
 
 namespace MarsRover.Domain.Commands
 {
@@ -27,9 +26,9 @@ namespace MarsRover.Domain.Commands
                         break;
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                throw;
             }
         }
     }
