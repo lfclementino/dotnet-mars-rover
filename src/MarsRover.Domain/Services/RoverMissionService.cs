@@ -2,7 +2,6 @@
 using MarsRover.Domain.Interfaces;
 using MarsRover.Domain.Models;
 using Microsoft.Extensions.Logging;
-using System;
 
 namespace MarsRover.Domain.Services
 {
@@ -33,9 +32,9 @@ namespace MarsRover.Domain.Services
             {
                 _logger.LogWarning($"[WARNING] ROVER OUT OF BOUNDS: {ex.Message}");
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                throw;
             }
         }
     }

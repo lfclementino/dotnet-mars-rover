@@ -2,7 +2,7 @@
 **Luiz Felipe Mandetta Clementino**
 
 ## Stack used
-- Dotnet Core 3.1
+- .NET 5
 - xUnit
 
 ## How to run

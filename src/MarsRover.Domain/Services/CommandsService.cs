@@ -37,7 +37,7 @@ namespace MarsRover.Domain.Services
             }
             catch (ArgumentNullException ex)
             {
-                throw ex;
+                throw;
             }
             catch (Exception ex)
             {

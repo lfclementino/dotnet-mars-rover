@@ -42,42 +42,41 @@ namespace MarsRover.Rover
 
         static void RunRoverMission(ServiceProvider serviceProvider, int width, int height, int x, int y, Direction initialDirection, string inputCommands)
         {
-            using (var scope = serviceProvider.CreateScope())
+            using var scope = serviceProvider.CreateScope();
+
+            var logger = scope.ServiceProvider.GetService<ILogger<Program>>();
+            logger.LogInformation("*** Starting Mission ***");
+
+            try
             {
-                var logger = scope.ServiceProvider.GetService<ILogger<Program>>();
-                logger.LogInformation("*** Starting Mission ***");
+                var roverMissionService = scope.ServiceProvider.GetService<IRoverMissionService>();
 
-                try
+                // Create Rover and Square Floor
+                var floor = new Floor(width, height);
+
+                var rover = new Domain.Models.Rover();
+                rover.Location = new RoverLocation()
                 {
-                    var roverMissionService = scope.ServiceProvider.GetService<IRoverMissionService>();
+                    Direction = initialDirection,
+                    X = new Axis(x),
+                    Y = new Axis(y)
+                };
 
-                    // Create Rover and Square Floor
-                    var floor = new Floor(width, height);
+                // Initialize Mission
+                var roverMission = new RoverMission(floor, rover);
 
-                    var rover = new Domain.Models.Rover();
-                    rover.Location = new RoverLocation()
-                    {
-                        Direction = initialDirection,
-                        X = new Axis(x),
-                        Y = new Axis(y)
-                    };
+                logger.LogInformation($"Mission created with Floor W:{floor.Width} H:{floor.Height} " +
+                                       $"and Rover at initial position X:{rover.Location.X.Value} Y:{rover.Location.Y.Value} Dir:{rover.Location.Direction}");
 
-                    // Initialize Mission
-                    var roverMission = new RoverMission(floor, rover);
-
-                    logger.LogInformation($"Mission created with Floor W:{floor.Width} H:{floor.Height} " +
-                                           $"and Rover at initial position X:{rover.Location.X.Value} Y:{rover.Location.Y.Value} Dir:{rover.Location.Direction}");
-
-                    roverMissionService.MoveRover(roverMission, inputCommands);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError($"Mission Error: {ex.Message}");
-                }
-                finally
-                {
-                    logger.LogInformation("*** End of Mission ***");
-                }
+                roverMissionService.MoveRover(roverMission, inputCommands);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Mission Error: {ex.Message}");
+            }
+            finally
+            {
+                logger.LogInformation("*** End of Mission ***");
             }
         }
     }

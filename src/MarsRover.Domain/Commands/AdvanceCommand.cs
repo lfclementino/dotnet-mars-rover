@@ -2,7 +2,6 @@
 using MarsRover.Domain.Exceptions;
 using MarsRover.Domain.Interfaces;
 using MarsRover.Domain.Models;
-using System;
 
 namespace MarsRover.Domain.Commands
 {
@@ -15,7 +14,6 @@ namespace MarsRover.Domain.Commands
             _step = step;
         }
 
-
         public void Execute(Floor floor, Rover rover)
         {
             try
@@ -25,14 +23,14 @@ namespace MarsRover.Domain.Commands
                     case Direction.North:
                         if (rover.Location.Y.Value >= floor.Height)
                         {
-                            throw new OutOfBoundsException();
+                            throw new OutOfBoundsException("Invalid Y value.");
                         }
                         rover.Location.Y.Increase(_step);
                         break;
                     case Direction.East:
                         if (rover.Location.X.Value >= floor.Width)
                         {
-                            throw new OutOfBoundsException();
+                            throw new OutOfBoundsException("Invalid X value.");
                         }
                         rover.Location.X.Increase(_step);
                         break;
@@ -46,11 +44,11 @@ namespace MarsRover.Domain.Commands
             }
             catch (InvalidAxisValueException ex)
             {
-                throw new OutOfBoundsException();
+                throw new OutOfBoundsException(ex.Message);
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                throw;
             }
         }
     }
