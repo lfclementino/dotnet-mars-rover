@@ -1,6 +1,5 @@
 ﻿using MarsRover.Domain.Enums;
 using MarsRover.Domain.Exceptions;
-using System;
 
 namespace MarsRover.Domain.Models
 {
@@ -16,9 +15,9 @@ namespace MarsRover.Domain.Models
             {
                 ValidateLocationAndFloor(Floor, Rover.Location);
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                throw;
             }
         }
         public Floor Floor { get; }
@@ -34,17 +33,17 @@ namespace MarsRover.Domain.Models
 
                 var result = isValidDirection && isValidX && isValidY;
 
-                if(!result)
+                if (!result)
                 {
                     throw new InvalidRoverMissionException(location.X.Value, location.Y.Value, location.Direction, floor.Width, floor.Height);
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                throw;
             }
         }
-        
+
         private bool IsValidDirection(Direction direction)
         {
             if (direction == Direction.West ||
